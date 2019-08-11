@@ -1,6 +1,7 @@
 package com.example.sweetdream;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,10 +10,14 @@ import android.content.IntentFilter;
 import android.database.SQLException;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.media.Image;
+import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
@@ -23,6 +28,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -99,6 +105,19 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
     @Bind(R.id.appbar)
     AppBarLayout appbar;
 
+    /**
+     * new code for record
+     */
+    ImageButton recordControl;
+    ImageButton recordFinish;
+    ImageButton displayRecord;
+
+    int recordStatus = 0; //0: notstarted, 1:recording, 2:paused
+    int displayStatus = 0;
+
+    MediaPlayer recordPlayer;
+
+    //end new code for record
     private Config config;
     private WindowManager.LayoutParams lp;
     private BookList bookList;
@@ -333,6 +352,76 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
         }
     };
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        this.recordControl = (ImageButton)findViewById(R.id.record_btn);
+        this.recordFinish = (ImageButton)findViewById(R.id.stop_record_btn);
+        this.displayRecord = (ImageButton)findViewById(R.id.display_record);
+
+        this.recordPlayer = MediaPlayer.create(this, R.raw.testamrfile);
+//        try {
+//            this.recordPlayer.setDataSource("res/raw/in_the_end_linkin_park");
+//        }catch (Exception e){
+//            Log.d("recordPlayer", e.toString());
+//        }
+        this.recordPlayer.setVolume(0.5f, 0.5f);
+        this.recordPlayer.setLooping(false);
+
+        this.displayRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //display
+                if(displayStatus == 0){
+                    recordPlayer.start();
+                    displayRecord.setImageResource(R.drawable.display_pause);
+                    displayStatus = 1;
+                }
+                else{
+                    recordPlayer.pause();
+                    displayStatus = 0;
+                    displayRecord.setImageResource(R.drawable.display_play);
+                }
+            }
+        });
+
+        this.recordFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ReadActivity.this);
+                builder.setMessage("Do you want to save your reading record? ");
+                builder.setCancelable(true);
+                builder.setPositiveButton("save",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //save file
+                                recordStatus = 0;
+                            }
+                        });
+                final Dialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
+        this.recordControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(recordStatus == 0){
+
+                }
+                else if(recordStatus == 1){
+
+                }
+                else{
+
+                }
+            }
+        });
+    }
 
     @Override
     protected void onResume(){

@@ -52,6 +52,7 @@
     <string name="page_mode_none">无</string>
 
     <string name="readseting">设置</string>
+    <string name="read_stop_display">Stop display</string>
 
 
 </resources>

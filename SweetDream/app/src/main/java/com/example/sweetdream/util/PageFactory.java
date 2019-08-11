@@ -175,7 +175,7 @@ public class PageFactory {
         DisplayMetrics metric = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metric);
         mWidth = metric.widthPixels;
-        mHeight = metric.heightPixels;
+        mHeight = (int)(metric.heightPixels * 0.8);
 
         sdf = new SimpleDateFormat("HH:mm");//HH:mm为24小时制,hh:mm为12小时制
         date = sdf.format(new java.util.Date());
