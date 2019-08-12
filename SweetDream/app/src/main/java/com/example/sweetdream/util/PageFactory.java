@@ -218,7 +218,7 @@ public class PageFactory {
     }
 
     private void calculateLineCount(){
-        mLineCount = (int) (mVisibleHeight / (m_fontSize + lineSpace));// 可显示的行数
+        mLineCount = (int) (mVisibleHeight / (m_fontSize + lineSpace));
     }
 
     private void drawStatus(Bitmap bitmap){
@@ -279,8 +279,8 @@ public class PageFactory {
             }
         }
 
-        int dateWith = (int) (mBatterryPaint.measureText(date)+mBorderWidth);//时间宽度
-        float fPercent = (float) (currentPage.getBegin() * 1.0 / mBookUtil.getBookLen());//进度
+        int dateWith = (int) (mBatterryPaint.measureText(date)+mBorderWidth);
+        float fPercent = (float) (currentPage.getBegin() * 1.0 / mBookUtil.getBookLen());
         currentProgress = fPercent;
         if (mPageEvent != null){
             mPageEvent.changeProgress(fPercent);
@@ -364,13 +364,13 @@ public class PageFactory {
         Log.e("nextPage","nextPagenext");
     }
 
-    //取消翻页
+
     public void cancelPage(){
         currentPage = cancelPage;
     }
 
     /**
-     * 打开书本
+     *
      * @throws IOException
      */
     public void openBook(BookList bookList) throws IOException {

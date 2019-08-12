@@ -28,9 +28,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
-/**
- * Created by Administrator on 2016/7/11 0011.
- */
+
 public class FileActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
@@ -46,7 +44,7 @@ public class FileActivity extends BaseActivity {
 
     public static final int EXTERNAL_STORAGE_REQ_CODE = 10 ;
 
-    //文件根目录
+
     private File root;
     private List<File> listFile = new ArrayList<>();
     private static FileAdapter adapter;
@@ -61,7 +59,7 @@ public class FileActivity extends BaseActivity {
     protected void initData() {
         getWindow().setBackgroundDrawable(null);
         setSupportActionBar(toolbar);
-        //设置导航图标
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +68,7 @@ public class FileActivity extends BaseActivity {
             }
         });
         if(getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("导入图书");
+            getSupportActionBar().setTitle("add file");
         }
 
         adapter = new FileAdapter(this, listFile);
@@ -108,21 +106,21 @@ public class FileActivity extends BaseActivity {
                 setAddFileText(adapter.getCheckNum());
             }
         });
-        //全选
+
         btnChooseAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 adapter.checkAll();
             }
         });
-        //取消选择
+
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 adapter.cancel();
             }
         });
-        //把已经选择的书加入书架
+
         btnAddFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +140,7 @@ public class FileActivity extends BaseActivity {
         }
     }
 
-    //保存选择的txt文件
+
     private void saveBookList(){
         List<File> files = adapter.getCheckFiles();
         if (files.size() > 0) {
@@ -191,15 +189,15 @@ public class FileActivity extends BaseActivity {
             String msg = "";
             switch (result){
                 case FAIL:
-                    msg = "由于一些原因添加书本失败";
+                    msg = "Fail";
                     break;
                 case SUCCESS:
-                    msg = "添加书本成功";
+                    msg = "add successful";
                     setAddFileText(0);
                     adapter.cancel();
                     break;
                 case REPEAT:
-                    msg = "书本" + repeatBookList.getBookname() + "重复了";
+                    msg = "book" + repeatBookList.getBookname() + "repeated";
                     break;
             }
 
@@ -212,7 +210,7 @@ public class FileActivity extends BaseActivity {
         btnAddFile.post(new Runnable() {
             @Override
             public void run() {
-                btnAddFile.setText("加入书架(" + num + ")项");
+                btnAddFile.setText("add into bookshelf(" + num + ")");
             }
         });
     }
@@ -225,7 +223,7 @@ public class FileActivity extends BaseActivity {
     private class SearchTextFileTask extends AsyncTask<Void,Void,Boolean>{
         @Override
         protected void onPreExecute() {
-            showProgress(true,"正在扫描txt文件");
+            showProgress(true,"scaning text");
         }
 
         @Override
@@ -247,7 +245,7 @@ public class FileActivity extends BaseActivity {
 //                endTime = System.currentTimeMillis();
 //                Log.e("time",endTime - startTime + "");
             } else {
-                Toast.makeText(FileActivity.this, "本机查不到txt文件", Toast.LENGTH_SHORT)
+                Toast.makeText(FileActivity.this, "no file", Toast.LENGTH_SHORT)
                         .show();
             }
         }
@@ -257,14 +255,14 @@ public class FileActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case EXTERNAL_STORAGE_REQ_CODE: {
-                // 如果请求被拒绝，那么通常grantResults数组为空
+
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //申请成功，进行相应操作
+
                     root = Environment.getExternalStorageDirectory();
                     searchFile();
                 } else {
-                    //申请失败，可以继续向用户解释。
+
                 }
                 return;
             }

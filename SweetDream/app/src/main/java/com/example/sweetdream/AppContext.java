@@ -13,9 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by Administrator on 2016/7/8 0008.
- */
+
 public class AppContext extends LitePalApplication {
     public static volatile Context applicationContext = null;
 
@@ -75,9 +73,9 @@ public class AppContext extends LitePalApplication {
     }
 
     /**
-     * 将sample工程需要的资源文件拷贝到SD卡中使用（授权文件为临时授权文件，请注册正式授权）
      *
-     * @param isCover 是否覆盖已存在的目标文件
+     *
+     * @param isCover
      * @param source
      * @param dest
      */
