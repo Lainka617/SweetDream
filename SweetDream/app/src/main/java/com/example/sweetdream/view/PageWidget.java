@@ -16,37 +16,34 @@ import android.widget.Scroller;
 import com.example.sweetdream.Config;
 import com.example.sweetdream.util.PageFactory;
 import com.example.sweetdream.view.animation.AnimationProvider;
-import com.example.sweetdream.view.animation.CoverAnimation;
-import com.example.sweetdream.view.animation.NoneAnimation;
-import com.example.sweetdream.view.animation.SimulationAnimation;
-import com.example.sweetdream.view.animation.SlideAnimation;
 
-/**
- * Created by Administrator on 2016/8/29 0029.
- */
+import com.example.sweetdream.view.animation.SimulationAnimation;
+
+
+
 public class PageWidget extends View {
     private final static String TAG = "BookPageWidget";
-    private int mScreenWidth = 0; // 屏幕宽
-    private int mScreenHeight = 0; // 屏幕高
+    private int mScreenWidth = 0;
+    private int mScreenHeight = 0;
     private Context mContext;
 
-    //是否移动了
+
     private Boolean isMove = false;
-    //是否翻到下一页
+
     private Boolean isNext = false;
-    //是否取消翻页
+
     private Boolean cancelPage = false;
-    //是否没下一页或者上一页
+
     private Boolean noNext = false;
     private int downX = 0;
     private int downY = 0;
 
     private int moveX = 0;
     private int moveY = 0;
-    //翻页动画是否在执行
+
     private Boolean isRuning =false;
 
-    Bitmap mCurPageBitmap = null; // 当前页
+    Bitmap mCurPageBitmap = null;
     Bitmap mNextPageBitmap = null;
     private AnimationProvider mAnimationProvider;
 
@@ -81,22 +78,8 @@ public class PageWidget extends View {
     }
 
     public void setPageMode(int pageMode){
-        switch (pageMode){
-            case Config.PAGE_MODE_SIMULATION:
-                mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
-                break;
-            case Config.PAGE_MODE_COVER:
-                mAnimationProvider = new CoverAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
-                break;
-            case Config.PAGE_MODE_SLIDE:
-                mAnimationProvider = new SlideAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
-                break;
-            case Config.PAGE_MODE_NONE:
-                mAnimationProvider = new NoneAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
-                break;
-            default:
-                mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
-        }
+        mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
+
     }
 
     public Bitmap getCurPage(){
@@ -113,7 +96,7 @@ public class PageWidget extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-//        canvas.drawColor(0xFFAAAAAA);
+
         canvas.drawColor(mBgColor);
         Log.e("onDraw","isNext:" + isNext + "          isRuning:" + isRuning);
         if (isRuning) {
@@ -133,6 +116,8 @@ public class PageWidget extends View {
         int x = (int)event.getX();
         int y = (int)event.getY();
 
+        //set timer for alarm
+        mTouchListener.setTimer();
         mAnimationProvider.setTouchPoint(x,y);
         if (event.getAction() == MotionEvent.ACTION_DOWN){
             downX = (int) event.getX();
@@ -140,7 +125,6 @@ public class PageWidget extends View {
             moveX = 0;
             moveY = 0;
             isMove = false;
-//            cancelPage = false;
             noNext = false;
             isNext = false;
             isRuning = false;
@@ -150,7 +134,7 @@ public class PageWidget extends View {
         }else if (event.getAction() == MotionEvent.ACTION_MOVE){
 
             final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-            //判断是否移动了
+
             if (!isMove) {
                 isMove = Math.abs(downX - x) > slop || Math.abs(downY - y) > slop;
             }
@@ -159,7 +143,7 @@ public class PageWidget extends View {
                 isMove = true;
                 if (moveX == 0 && moveY ==0) {
                     Log.e(TAG,"isMove");
-                    //判断翻得是上一页还是下一页
+
                     if (x - downX >0){
                         isNext = false;
                     }else{
@@ -168,7 +152,6 @@ public class PageWidget extends View {
                     cancelPage = false;
                     if (isNext) {
                         Boolean isNext = mTouchListener.nextPage();
-//                        calcCornerXY(downX,mScreenHeight);
                         mAnimationProvider.setDirection(AnimationProvider.Direction.next);
 
                         if (!isNext) {
@@ -186,7 +169,7 @@ public class PageWidget extends View {
                     }
                     Log.e(TAG,"isNext:" + isNext);
                 }else{
-                    //判断是否取消翻页
+
                     if (isNext){
                         if (x - moveX > 0){
                             cancelPage = true;
@@ -216,16 +199,12 @@ public class PageWidget extends View {
             Log.e(TAG,"ACTION_UP");
             if (!isMove){
                 cancelPage = false;
-                //是否点击了中间
+                //check if click the center
                 if (downX > mScreenWidth / 5 && downX < mScreenWidth * 4 / 5 && downY > mScreenHeight / 3 && downY < mScreenHeight * 2 / 3){
                     if (mTouchListener != null){
                         mTouchListener.center();
                     }
-                    Log.e(TAG,"center");
-//                    mCornerX = 1; // 拖拽点对应的页脚
-//                    mCornerY = 1;
-//                    mTouch.x = 0.1f;
-//                    mTouch.y = 0.1f;
+
                     return true;
                 }else if (x < mScreenWidth / 2){
                     isNext = false;
@@ -298,6 +277,7 @@ public class PageWidget extends View {
         Boolean prePage();
         Boolean nextPage();
         void cancel();
+        void setTimer();
     }
 
 }

@@ -12,9 +12,7 @@ import butterknife.ButterKnife;
 public abstract class BaseFragment extends Fragment {
 
     private View rootView;
-    /**
-     * 初始化布局
-     */
+
     protected abstract int getLayoutRes();
 
     protected abstract void initData(View view);
@@ -26,7 +24,6 @@ public abstract class BaseFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(getLayoutRes(), container, false);
         rootView = view;
-        // 初始化View注入
         ButterKnife.bind(this,view);
         initData(view);
         initListener();

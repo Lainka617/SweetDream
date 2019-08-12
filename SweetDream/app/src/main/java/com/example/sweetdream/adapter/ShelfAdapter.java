@@ -114,7 +114,7 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
     }
 
     /**
-     * Drag移动时item交换数据,并在数据库中更新交换后的位置数据
+     *
      * @param oldPosition
      * @param newPosition
      */
@@ -130,7 +130,6 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
        // Log.d("newposotion is", newPosition + "");
         if(oldPosition < newPosition){
             for(int i=oldPosition; i<newPosition; i++){
-                //获得交换前的ID,必须是数据库的真正的ID，如果使用bilist获取id是错误的，因为bilist交换后id是跟着交换的
                 List<BookList> bookLists = new ArrayList<>();
                 bookLists = DataSupport.findAll(BookList.class);
                 int dataBasesId = bookLists.get(i).getId();
@@ -158,7 +157,7 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
     }
 
     /**
-     * 两个item数据交换结束后，把不需要再交换的item更新到数据库中
+     *
      * @param position
      * @param bookLists
      */
@@ -170,13 +169,11 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
         bookList.setBookname(bookname);
         bookList.setBegin(bookLists.get(position).getBegin());
         bookList.setCharset(bookLists.get(position).getCharset());
-        //开线程保存改动的数据到数据库
-        //使用litepal数据库框架update时每次只能update一个id中的一条信息，如果相同则不更新。
         upDateBookToSqlite3(databaseId , bookList);
     }
 
     /**
-     * 隐藏item
+     *
      * @param hidePosition
      */
     @Override
@@ -186,7 +183,7 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
     }
 
     /**
-     * 删除书本
+     *
      * @param deletePosition
      */
     @Override
@@ -195,7 +192,7 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
         String bookpath = bilist.get(deletePosition).getBookpath();
         DataSupport.deleteAll(BookList.class, "bookpath = ?", bookpath);
         bilist.remove(deletePosition);
-       // Log.d("删除的书本是", bookpath);
+
 
         notifyDataSetChanged();
 
@@ -206,7 +203,7 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
         notifyDataSetChanged();
     }
     /**
-     * Book打开后位置移动到第一位
+     *
      * @param openPosition
      */
     @Override
@@ -231,7 +228,6 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
             updateBookPosition(0, tempId, bookLists1);
             for (int j = 0 ;j<bookLists1.size();j++) {
                 String bookpath = bookLists1.get(j).getBookpath();
-              //  Log.d("移动到第一位",bookpath);
             }
         }
         notifyDataSetChanged();
@@ -247,8 +243,8 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
     }
 
     /**
-     * 数据库书本信息更新
-     * @param databaseId  要更新的数据库的书本ID
+     *
+     * @param databaseId
      * @param bookList
      */
     public void upDateBookToSqlite3(final int databaseId,final BookList bookList) {
@@ -274,7 +270,7 @@ public class ShelfAdapter extends BaseAdapter implements DragGridListener {
                 if (result) {
 
                 } else {
-                    Log.d("保存到数据库结果-->", "失败");
+                    Log.d("save to database-->", "fail");
                 }
             }
         });

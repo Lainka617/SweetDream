@@ -2,13 +2,11 @@ package com.example.sweetdream.db;
 
 import org.litepal.crud.DataSupport;
 
-/**
- * Created by Administrator on 2015/12/27.
- */
+
 public class BookMarks extends DataSupport {
     private int id ;
   //  private int page;
-    private long begin; // 书签记录页面的结束点位置
+    private long begin;
   //  private int count;
     private String text;
     private String time;

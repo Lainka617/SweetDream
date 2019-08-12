@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sweetdream.R;
-//import com.example.sweetdream.ReadActivity;
+import com.example.sweetdream.ReadActivity;
 import com.example.sweetdream.db.BookList;
 import com.example.sweetdream.util.FileUtils;
 
@@ -176,7 +176,6 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
             getActivity().registerReceiver(receiver, filter);
         }
 
-//        bookLists = DataSupport.findAll(BookList.class);
 
         if (fragmentView == null) {
             fragmentView = inflater.inflate(R.layout.document_select_layout,
@@ -308,7 +307,6 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
                 changgeCheckBookNum();
                 break;
             case R.id.btn_add_file:
-//                changgeCheckBookNum();
                 addCheckBook();
                 break;
         }
@@ -453,7 +451,7 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
                         if (path.toLowerCase().contains("sd")) {
                             ext.title = "SdCard";
                         } else {
-                            ext.title = "外部存储";
+                            ext.title = "external storage";
                         }
                         item.icon = R.mipmap.ic_external_storage;
                         item.subtitle = getRootSubtitle(path);
@@ -474,23 +472,6 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
         fs.file = new File("/");
         items.add(fs);
 
-        // try {
-        // File telegramPath = new
-        // File(Environment.getExternalStorageDirectory(), "Telegram");
-        // if (telegramPath.exists()) {
-        // fs = new ListItem();
-        // fs.title = "Telegram";
-        // fs.subtitle = telegramPath.toString();
-        // fs.icon = R.drawable.ic_directory;
-        // fs.file = telegramPath;
-        // items.add(fs);
-        // }
-        // } catch (Exception e) {
-        // FileLog.e("tmessages", e);
-        // }
-
-        // AndroidUtilities.clearDrawableAnimation(listView);
-        // scrolling = true;
         listAdapter.notifyDataSetChanged();
     }
 
@@ -558,7 +539,7 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
             item.file = file;
             if (file.isDirectory()) {
                 item.icon = R.mipmap.ic_directory;
-                item.subtitle = "文件夹";
+                item.subtitle = "folder";
             } else {
                 String fname = file.getName();
                 String[] sp = fname.split("\\.");
@@ -574,7 +555,7 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
         }
         ListItem item = new ListItem();
         item.title = "..";
-        item.subtitle = "文件夹";
+        item.subtitle = "folder";
         item.icon = R.mipmap.ic_directory;
         item.file = null;
         items.add(0, item);
@@ -630,7 +611,7 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
         }
         new AlertDialog.Builder(getActivity())
                 .setTitle(getActivity().getString(R.string.app_name))
-                .setMessage(path).setPositiveButton("阅读", new DialogInterface.OnClickListener() {
+                .setMessage(path).setPositiveButton("read", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 BookList bookList = new BookList();
@@ -648,7 +629,7 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
                 if (!isSave){
                     bookList.save();
                 }
-                //ReadActivity.openBook(bookList,getActivity());
+                ReadActivity.openBook(bookList,getActivity());
             }
         }).show();
     }
@@ -733,12 +714,6 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
                 }
             });
 
-            // if (item.file != null && actionBar.isActionModeShowed()) {
-            // textDetailCell.setChecked(selectedFiles.containsKey(item.file.toString()),
-            // !scrolling);
-            // } else {
-            // textDetailCell.setChecked(false, !scrolling);
-            // }
             return convertView;
         }
 

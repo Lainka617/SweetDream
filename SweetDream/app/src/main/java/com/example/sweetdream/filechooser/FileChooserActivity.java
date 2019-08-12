@@ -125,25 +125,25 @@ public class FileChooserActivity extends AppCompatActivity {
     }
 
     /**
-     * 检查是否拥有权限
+     *
      * @param thisActivity
      * @param permission
      * @param requestCode
      * @param errorText
      */
     protected void checkPermission (Activity thisActivity, String permission, int requestCode, String errorText) {
-        //判断当前Activity是否已经获得了该权限
+
         if(ContextCompat.checkSelfPermission(thisActivity,permission) != PackageManager.PERMISSION_GRANTED) {
-            //如果App的权限申请曾经被用户拒绝过，就需要在这里跟用户做出解释
+
             if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
                     permission)) {
                 Toast.makeText(this,errorText,Toast.LENGTH_SHORT).show();
-                //进行权限请求
+
                 ActivityCompat.requestPermissions(thisActivity,
                         new String[]{permission},
                         requestCode);
             } else {
-                //进行权限请求
+
                 ActivityCompat.requestPermissions(thisActivity,
                         new String[]{permission},
                         requestCode);

@@ -8,13 +8,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Administrator on 2016/7/11 0011.
- */
 public class FileUtils {
 
     /**
-     * 获取文件编码
+     * s
      * @param fileName
      * @return
      * @throws IOException
@@ -40,7 +37,7 @@ public class FileUtils {
     }
 
     /**
-     * 根据路径获取文件名
+     *
      * @param pathandname
      * @return
      */
@@ -62,10 +59,10 @@ public class FileUtils {
     }
 
     /**
-     * 读取sd卡上指定后缀的所有文件
-     * @param files 返回的所有文件
-     * @param f 路径(可传入sd卡路径)
-     * @param suffere 后缀名称 比如 .gif
+     *
+     * @param files
+     * @param f
+     * @param suffere
      * @return
      */
     public static  List<File> getSuffixFile(List<File> files, File f, final String suffere) {
@@ -83,7 +80,7 @@ public class FileUtils {
             }else if(subFile.getName().endsWith(suffere)){
                 files.add(subFile);
             } else{
-                //非指定目录文件 不做处理
+
             }
 //            Log.e("filename",subFile.getName());
         }

@@ -17,9 +17,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;
 
-    /**
-     * 初始化布局
-     */
     public abstract int getLayoutRes();
 
     protected abstract void initData();
@@ -31,7 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(getLayoutRes());
-        // 初始化View注入
         ButterKnife.bind(this);
         
         initData();
@@ -75,25 +71,25 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 检查是否拥有权限
+     * check if there is permission
      * @param thisActivity
      * @param permission
      * @param requestCode
      * @param errorText
      */
     protected void checkPermission (Activity thisActivity, String permission, int requestCode,String errorText) {
-        //判断当前Activity是否已经获得了该权限
+
         if(ContextCompat.checkSelfPermission(thisActivity,permission) != PackageManager.PERMISSION_GRANTED) {
-            //如果App的权限申请曾经被用户拒绝过，就需要在这里跟用户做出解释
+
             if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
                     permission)) {
                 Toast.makeText(this,errorText,Toast.LENGTH_SHORT).show();
-                //进行权限请求
+
                 ActivityCompat.requestPermissions(thisActivity,
                         new String[]{permission},
                         requestCode);
             } else {
-                //进行权限请求
+
                 ActivityCompat.requestPermissions(thisActivity,
                         new String[]{permission},
                         requestCode);

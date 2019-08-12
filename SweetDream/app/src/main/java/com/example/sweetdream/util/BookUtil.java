@@ -20,18 +20,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Administrator on 2016/8/11 0011.
- */
+
 public class BookUtil {
     private static final String cachedPath = Environment.getExternalStorageDirectory() + "/SweetDream/";
-    //存储的字符数
     public static final int cachedSize = 30000;
-//    protected final ArrayList<WeakReference<char[]>> myArray = new ArrayList<>();
 
     protected final ArrayList<Cache> myArray = new ArrayList<>();
-//    //目录
-//    private List<BookCatalogue> directoryList = new ArrayList<>();
 
     private String m_strCharsetName;
     private String bookName;
@@ -49,7 +43,6 @@ public class BookUtil {
 
     public synchronized void openBook(BookList bookList) throws IOException {
         this.bookList = bookList;
-        //如果当前缓存不是要打开的书本就缓存书本同时删除缓存
 
         if (bookPath == null || !bookPath.equals(bookList.getBookpath())) {
             cleanCacheFile();
@@ -166,7 +159,7 @@ public class BookUtil {
         this.position = position;
     }
 
-    //缓存书本
+
     private void cacheBook() throws IOException {
         if (TextUtils.isEmpty(bookList.getCharset())) {
             m_strCharsetName = FileUtils.getCharset(bookPath);
@@ -234,39 +227,6 @@ public class BookUtil {
         }.start();
     }
 
-//    //获取章节
-//    public synchronized void getChapter(){
-//        try {
-//            long size = 0;
-//            for (int i = 0; i < myArray.size(); i++) {
-//                char[] buf = block(i);
-//                String bufStr = new String(buf);
-//                String[] paragraphs = bufStr.split("\r\n");
-//                for (String str : paragraphs) {
-//                    if (str.length() <= 30 && (str.matches(".*第.{1,8}章.*") || str.matches(".*第.{1,8}节.*"))) {
-//                        BookCatalogue bookCatalogue = new BookCatalogue();
-//                        bookCatalogue.setBookCatalogueStartPos(size);
-//                        bookCatalogue.setBookCatalogue(str);
-//                        bookCatalogue.setBookpath(bookPath);
-//                        directoryList.add(bookCatalogue);
-//                    }
-//                    if (str.contains("\u3000\u3000")) {
-//                        size += str.length() + 2;
-//                    }else if (str.contains("\u3000")){
-//                        size += str.length() + 1;
-//                    }else {
-//                        size += str.length();
-//                    }
-//                }
-//            }
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//    }
-
-//    public List<BookCatalogue> getDirectoryList(){
-//        return directoryList;
-//    }
 
     public long getBookLen(){
         return bookLen;
@@ -276,7 +236,6 @@ public class BookUtil {
         return cachedPath + bookName + index ;
     }
 
-    //获取书本缓存
     public char[] block(int index) {
         if (myArray.size() == 0){
             return new char[1];

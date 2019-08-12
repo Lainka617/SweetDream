@@ -2,6 +2,7 @@ package com.example.sweetdream;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -56,6 +58,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -70,28 +74,11 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
 
     @Bind(R.id.bookpage)
     PageWidget bookpage;
-//    @Bind(R.id.btn_return)
-//    ImageButton btn_return;
-//    @Bind(R.id.ll_top)
-//    LinearLayout ll_top;
     @Bind(R.id.tv_progress)
     TextView tv_progress;
     @Bind(R.id.rl_progress)
     RelativeLayout rl_progress;
-//    @Bind(R.id.tv_pre)
-//    TextView tv_pre;
-//    @Bind(R.id.sb_progress)
-//    SeekBar sb_progress;
-//    @Bind(R.id.tv_next)
-//    TextView tv_next;
-//    @Bind(R.id.tv_directory)
-//    TextView tv_directory;
-//    @Bind(R.id.tv_dayornight)
-//    TextView tv_dayornight;
-//    @Bind(R.id.tv_pagemode)
-//    TextView tv_pagemode;
-//    @Bind(R.id.tv_setting)
-//    TextView tv_setting;
+
     @Bind(R.id.bookpop_bottom)
     LinearLayout bookpop_bottom;
     @Bind(R.id.rl_bottom)
@@ -111,13 +98,13 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
     ImageButton recordControl;
     ImageButton recordFinish;
     ImageButton displayRecord;
-
     int recordStatus = 0; //0: notstarted, 1:recording, 2:paused
     int displayStatus = 0;
 
     MediaPlayer recordPlayer;
 
     //end new code for record
+
     private Config config;
     private WindowManager.LayoutParams lp;
     private BookList bookList;
@@ -131,6 +118,15 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
     // 语音合成客户端
     private SpeechSynthesizer mSpeechSynthesizer;
     private boolean isSpeaking = false;
+
+    /**
+     * new code for timer
+     */
+
+    private TimerTask timerTask;
+    int alartTime = 61;
+    private Timer timer = new Timer();
+    Vibrator vibrator;
 
     // 接收电池信息更新的广播
     private BroadcastReceiver myReceiver = new BroadcastReceiver(){
@@ -213,76 +209,6 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
 
     @Override
     protected void initListener() {
-//        sb_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            float pro;
-//            // 触发操作，拖动
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                pro = (float) (progress / 10000.0);
-//                showProgress(pro);
-//            }
-//
-//            // 表示进度条刚开始拖动，开始拖动时候触发的操作
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            // 停止拖动时候
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//                pageFactory.changeProgress(pro);
-//            }
-//        });
-
-//        mPageModeDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                hideSystemUI();
-//            }
-//        });
-//
-//        mPageModeDialog.setPageModeListener(new PageModeDialog.PageModeListener() {
-//            @Override
-//            public void changePageMode(int pageMode) {
-//                bookpage.setPageMode(pageMode);
-//            }
-//        });
-//
-//        mSettingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                hideSystemUI();
-//            }
-//        });
-//
-//        mSettingDialog.setSettingListener(new SettingDialog.SettingListener() {
-//            @Override
-//            public void changeSystemBright(Boolean isSystem, float brightness) {
-//                if (!isSystem) {
-//                    BrightnessUtil.setBrightness(ReadActivity.this, brightness);
-//                } else {
-//                    int bh = BrightnessUtil.getScreenBrightness(ReadActivity.this);
-//                    BrightnessUtil.setBrightness(ReadActivity.this, bh);
-//                }
-//            }
-//
-//            @Override
-//            public void changeFontSize(int fontSize) {
-//                pageFactory.changeFontSize(fontSize);
-//            }
-//
-//            @Override
-//            public void changeTypeFace(Typeface typeface) {
-//                pageFactory.changeTypeface(typeface);
-//            }
-//
-//            @Override
-//            public void changeBookBg(int type) {
-//                pageFactory.changeBookBg(type);
-//            }
-//        });
-
         pageFactory.setPageEvent(new PageFactory.PageEvent() {
             @Override
             public void changeProgress(float progress) {
@@ -294,6 +220,8 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
         });
 
         bookpage.setTouchListener(new PageWidget.TouchListener() {
+
+
             @Override
             public void center() {
                 if (isShow) {
@@ -335,6 +263,20 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
             public void cancel() {
                 pageFactory.cancelPage();
             }
+
+            @Override
+             public void setTimer(){
+                timerTask.cancel();
+                alartTime = 61;
+                timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        mHandler.sendEmptyMessage(1);
+                    }
+                };
+                timer.schedule(timerTask, 0, 1000);
+            }
+
         });
 
     }
@@ -343,11 +285,10 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case MESSAGE_CHANGEPROGRESS:
-                    float progress = (float) msg.obj;
-                    //setSeekBarProgress(progress);
-                    break;
+            alartTime--;
+            if(alartTime==0){
+                Log.d("vibrator starts working","wuwuwuwu!!!!!");
+                vibrator.vibrate(5000);
             }
         }
     };
@@ -369,6 +310,20 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
 //        }
         this.recordPlayer.setVolume(0.5f, 0.5f);
         this.recordPlayer.setLooping(false);
+
+        /**
+         * new code for timer
+         */
+
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.sendEmptyMessage(0);
+            }
+        };
+        timer.schedule(timerTask, 0, 1000);
+        vibrator=(Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
+        // end
 
         this.displayRecord.setOnClickListener(new View.OnClickListener() {
             @Override
