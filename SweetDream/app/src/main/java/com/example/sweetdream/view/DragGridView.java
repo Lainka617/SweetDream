@@ -626,7 +626,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
                 canvas.drawBitmap(background, x, y, null);
             }
             if(y > top) {
-                canvas.drawBitmap(bookshelf_dock, 0 , y-dockHightPanding, null);
+                //canvas.drawBitmap(bookshelf_dock, 0 , y-dockHightPanding, null);
             }
         }
         if(i == 1) {

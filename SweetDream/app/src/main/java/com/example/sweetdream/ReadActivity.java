@@ -64,9 +64,7 @@ import java.util.TimerTask;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-/**
- * Created by Administrator on 2016/7/15 0015.
- */
+
 public class ReadActivity extends BaseActivity {
     private static final String TAG = "ReadActivity";
     private final static String EXTRA_BOOK = "bookList";
@@ -376,6 +374,14 @@ public class ReadActivity extends BaseActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        alartTime = 61;
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.sendEmptyMessage(1);
+            }
+        };
+        timer.schedule(timerTask, 0, 1000);
         if (!isShow){
             hideSystemUI();
         }
@@ -383,6 +389,7 @@ public class ReadActivity extends BaseActivity {
 
     @Override
     protected void onStop(){
+        timerTask.cancel();
         super.onStop();
     }
 

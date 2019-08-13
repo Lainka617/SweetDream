@@ -499,10 +499,10 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
                     return true;
                 }
             }
-            showErrorBox("没有权限!");
+            showErrorBox("No permission!");
             return false;
         }
-        emptyView.setText("没有文件!");
+        emptyView.setText("No file!");
         File[] files = null;
         try {
             files = dir.listFiles();
@@ -511,7 +511,7 @@ public class DirectoryFragment extends Fragment implements View.OnClickListener 
             return false;
         }
         if (files == null) {
-            showErrorBox("未知错误!");
+            showErrorBox("Error!");
             return false;
         }
         currentDir = dir;

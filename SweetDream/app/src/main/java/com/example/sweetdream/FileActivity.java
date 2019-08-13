@@ -75,7 +75,7 @@ public class FileActivity extends BaseActivity {
         lvFileDrawer.setAdapter(adapter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission(FileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, EXTERNAL_STORAGE_REQ_CODE,"添加图书需要此权限，请允许");
+            checkPermission(FileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, EXTERNAL_STORAGE_REQ_CODE,"Permission needed when adding books");
         }else{
             root = Environment.getExternalStorageDirectory();
             searchFile();
