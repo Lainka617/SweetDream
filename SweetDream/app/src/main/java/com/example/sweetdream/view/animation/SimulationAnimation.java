@@ -16,17 +16,17 @@ import android.widget.Scroller;
  * Created by Administrator on 2016/8/26 0026.
  */
 public class SimulationAnimation extends AnimationProvider {
-    private int mCornerX = 1; // 拖拽点对应的页脚
+    private int mCornerX = 1;
     private int mCornerY = 1;
     private Path mPath0;
     private Path mPath1;
 
-    PointF mBezierStart1 = new PointF(); // 贝塞尔曲线起始点
-    PointF mBezierControl1 = new PointF(); // 贝塞尔曲线控制点
-    PointF mBeziervertex1 = new PointF(); // 贝塞尔曲线顶点
-    PointF mBezierEnd1 = new PointF(); // 贝塞尔曲线结束点
+    PointF mBezierStart1 = new PointF();
+    PointF mBezierControl1 = new PointF();
+    PointF mBeziervertex1 = new PointF();
+    PointF mBezierEnd1 = new PointF();
 
-    PointF mBezierStart2 = new PointF(); // 另一条贝塞尔曲线
+    PointF mBezierStart2 = new PointF();
     PointF mBezierControl2 = new PointF();
     PointF mBeziervertex2 = new PointF();
     PointF mBezierEnd2 = new PointF();
@@ -39,11 +39,11 @@ public class SimulationAnimation extends AnimationProvider {
     Matrix mMatrix;
     float[] mMatrixArray = { 0, 0, 0, 0, 0, 0, 0, 0, 1.0f };
 
-    boolean mIsRTandLB; // 是否属于右上左下
+    boolean mIsRTandLB;
     private float mMaxLength ;
-    int[] mBackShadowColors;// 背面颜色组
-    int[] mFrontShadowColors;// 前面颜色组
-    GradientDrawable mBackShadowDrawableLR; // 有阴影的GradientDrawable
+    int[] mBackShadowColors;
+    int[] mFrontShadowColors;
+    GradientDrawable mBackShadowDrawableLR;
     GradientDrawable mBackShadowDrawableRL;
     GradientDrawable mFolderShadowDrawableLR;
     GradientDrawable mFolderShadowDrawableRL;
@@ -66,7 +66,7 @@ public class SimulationAnimation extends AnimationProvider {
 
         createDrawable();
 
-        ColorMatrix cm = new ColorMatrix();//设置颜色数组
+        ColorMatrix cm = new ColorMatrix();
 //        float array[] = { 0.55f, 0, 0, 0, 80.0f,
 //                           0, 0.55f, 0, 0, 80.0f,
 //                           0, 0,0.55f, 0, 80.0f,
@@ -79,7 +79,7 @@ public class SimulationAnimation extends AnimationProvider {
         mColorMatrixFilter = new ColorMatrixColorFilter(cm);
         mMatrix = new Matrix();
 
-        mTouch.x = 0.01f; // 不让x,y为0,否则在点计算时会有问题
+        mTouch.x = 0.01f;
         mTouch.y = 0.01f;
     }
 
@@ -117,8 +117,7 @@ public class SimulationAnimation extends AnimationProvider {
     @Override
     public void startAnimation(Scroller scroller) {
         int dx, dy;
-        // dx 水平方向滑动的距离，负值会使滚动向左滚动
-        // dy 垂直方向滑动的距离，负值会使滚动向上滚动
+
         if (getCancel()){
             if (mCornerX > 0 && getDirection().equals(Direction.next)) {
                 dx = (int) (mScreenWidth - mTouch.x);
@@ -133,7 +132,7 @@ public class SimulationAnimation extends AnimationProvider {
             if (mCornerY > 0) {
                 dy = (int) (mScreenHeight - mTouch.y);
             } else {
-                dy = - (int) mTouch.y; // 防止mTouch.y最终变为0
+                dy = - (int) mTouch.y;
             }
         }else {
             if (mCornerX > 0 && getDirection().equals(Direction.next)) {
@@ -144,7 +143,7 @@ public class SimulationAnimation extends AnimationProvider {
             if (mCornerY > 0) {
                 dy = (int) (mScreenHeight - mTouch.y);
             } else {
-                dy = (int) (1 - mTouch.y); // 防止mTouch.y最终变为0
+                dy = (int) (1 - mTouch.y);
             }
         }
         scroller.startScroll((int) mTouch.x, (int) mTouch.y, dx, dy, 400);
@@ -156,7 +155,7 @@ public class SimulationAnimation extends AnimationProvider {
         super.setDirection(direction);
         switch (direction){
             case pre:
-                //上一页滑动不出现对角
+
                 if (myStartX > mScreenWidth / 2){
                     calcCornerXY(myStartX,mScreenHeight);
                 }else{
@@ -180,7 +179,7 @@ public class SimulationAnimation extends AnimationProvider {
     @Override
     public void setTouchPoint(float x, float y) {
         super.setTouchPoint(x, y);
-        //触摸y中间位置吧y变成屏幕高度
+
         if ((myStartY > mScreenHeight / 3 && myStartY < mScreenHeight * 2 / 3) ||  getDirection().equals(Direction.pre)){
             mTouch.y = mScreenHeight;
         }
@@ -191,7 +190,7 @@ public class SimulationAnimation extends AnimationProvider {
     }
 
     /**
-     * 创建阴影的GradientDrawable
+     *
      */
     private void createDrawable() {
         int[] color = { 0x333333, 0xb0333333 };
@@ -236,7 +235,7 @@ public class SimulationAnimation extends AnimationProvider {
     }
 
     /**
-     * 是否能够拖动过去
+     *
      *
      * @return
      */
@@ -253,7 +252,7 @@ public class SimulationAnimation extends AnimationProvider {
     }
 
     /**
-     * 绘制翻起页背面
+     *
      *
      * @param canvas
      * @param bitmap
@@ -317,7 +316,7 @@ public class SimulationAnimation extends AnimationProvider {
     }
 
     /**
-     * 绘制翻起页的阴影
+     *
      *
      * @param canvas
      */
@@ -334,7 +333,7 @@ public class SimulationAnimation extends AnimationProvider {
                     - Math.atan2(mTouch.y - mBezierControl1.y, mTouch.x
                     - mBezierControl1.x);
         }
-        // 翻起页阴影顶点与touch点的距离
+        //
         double d1 = (float) 25 * 1.414 * Math.cos(degree);
         double d2 = (float) 25 * 1.414 * Math.sin(degree);
         float x = (float) (mTouch.x + d1);
@@ -443,7 +442,7 @@ public class SimulationAnimation extends AnimationProvider {
         int leftx;
         int rightx;
         GradientDrawable mBackShadowDrawable;
-        if (mIsRTandLB) {  //左下及右上
+        if (mIsRTandLB) {
             leftx = (int) (mBezierStart1.x);
             rightx = (int) (mBezierStart1.x + mTouchToCornerDis / 4);
             mBackShadowDrawable = mBackShadowDrawableLR;
@@ -463,7 +462,7 @@ public class SimulationAnimation extends AnimationProvider {
         canvas.drawBitmap(bitmap, 0, 0, null);
         canvas.rotate(mDegrees, mBezierStart1.x, mBezierStart1.y);
         mBackShadowDrawable.setBounds(leftx, (int) mBezierStart1.y, rightx,
-                (int) (mMaxLength + mBezierStart1.y));//左上及右下角的xy坐标值,构成一个矩形
+                (int) (mMaxLength + mBezierStart1.y));
         mBackShadowDrawable.draw(canvas);
         canvas.restore();
     }
@@ -492,7 +491,7 @@ public class SimulationAnimation extends AnimationProvider {
     }
 
     /**
-     * 计算拖拽点对应的拖拽脚
+     *
      *
      * @param x
      * @param y
@@ -537,7 +536,7 @@ public class SimulationAnimation extends AnimationProvider {
         }else {
             mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
                     * (mCornerX - mMiddleX) / (mCornerY - mMiddleY);
-            //    Log.d("PageWidget","没有进入if判断"+ mBezierControl2.y + "");
+
         }
 
         // Log.i("hmg", "mTouchX  " + mTouch.x + "  mTouchY  " + mTouch.y);
@@ -550,8 +549,6 @@ public class SimulationAnimation extends AnimationProvider {
                 / 2;
         mBezierStart1.y = mCornerY;
 
-        // 当mBezierStart1.x < 0或者mBezierStart1.x > 480时
-        // 如果继续翻页，会出现BUG故在此限制
         if (mTouch.x > 0 && mTouch.x < mScreenWidth) {
             if (mBezierStart1.x < 0 || mBezierStart1.x > mScreenWidth) {
                 if (mBezierStart1.x < 0)
@@ -610,16 +607,7 @@ public class SimulationAnimation extends AnimationProvider {
         mBezierEnd2 = getCross(mTouch, mBezierControl2, mBezierStart1,
                 mBezierStart2);
 
-        // Log.i("hmg", "mBezierEnd1.x  " + mBezierEnd1.x + "  mBezierEnd1.y  "
-        // + mBezierEnd1.y);
-        // Log.i("hmg", "mBezierEnd2.x  " + mBezierEnd2.x + "  mBezierEnd2.y  "
-        // + mBezierEnd2.y);
 
-		/*
-		 * mBeziervertex1.x 推导
-		 * ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 化简等价于
-		 * (mBezierStart1.x+ 2*mBezierControl1.x+mBezierEnd1.x) / 4
-		 */
         mBeziervertex1.x = (mBezierStart1.x + 2 * mBezierControl1.x + mBezierEnd1.x) / 4;
         mBeziervertex1.y = (2 * mBezierControl1.y + mBezierStart1.y + mBezierEnd1.y) / 4;
         mBeziervertex2.x = (mBezierStart2.x + 2 * mBezierControl2.x + mBezierEnd2.x) / 4;
@@ -627,7 +615,7 @@ public class SimulationAnimation extends AnimationProvider {
     }
 
     /**
-     * 求解直线P1P2和直线P3P4的交点坐标
+     *
      *
      * @param P1
      * @param P2
@@ -637,7 +625,7 @@ public class SimulationAnimation extends AnimationProvider {
      */
     public PointF getCross(PointF P1, PointF P2, PointF P3, PointF P4) {
         PointF CrossP = new PointF();
-        // 二元函数通式： y=ax+b
+        //  y=ax+b
         float a1 = (P2.y - P1.y) / (P2.x - P1.x);
         float b1 = ((P1.x * P2.y) - (P2.x * P1.y)) / (P1.x - P2.x);
 

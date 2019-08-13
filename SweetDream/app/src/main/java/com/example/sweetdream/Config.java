@@ -32,11 +32,11 @@ public class Config {
     private Context mContext;
     private static Config config;
     private SharedPreferences sp;
-    //字体
+
     private Typeface typeface;
-    //字体大小
+
     private float mFontSize = 0;
-    //亮度值
+
     private float light = 0;
     private int bookBG;
 
@@ -113,9 +113,7 @@ public class Config {
         sp.edit().putFloat(FONT_SIZE_KEY,fontSize).commit();
     }
 
-    /**
-     * 获取夜间还是白天阅读模式,true为夜晚，false为白天
-     */
+
     public boolean getDayOrNight() {
         return sp.getBoolean(NIGHT_KEY, false);
     }
@@ -124,25 +122,7 @@ public class Config {
         sp.edit().putBoolean(NIGHT_KEY,isNight).commit();
     }
 
-    public Boolean isSystemLight(){
-       return sp.getBoolean(SYSTEM_LIGHT_KEY,true);
-    }
 
-    public void setSystemLight(Boolean isSystemLight){
-        sp.edit().putBoolean(SYSTEM_LIGHT_KEY,isSystemLight).commit();
-    }
 
-    public float getLight(){
-        if (light == 0){
-            light = sp.getFloat(LIGHT_KEY,0.1f);
-        }
-        return light;
-    }
-    /**
-     * 记录配置文件中亮度值
-     */
-    public void setLight(float light) {
-        this.light = light;
-        sp.edit().putFloat(LIGHT_KEY,light).commit();
-    }
+
 }

@@ -75,7 +75,7 @@ public class FileChooserActivity extends AppCompatActivity {
         fragmentTransaction.commit();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission(FileChooserActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, EXTERNAL_STORAGE_REQ_CODE,"添加图书需要此权限，请允许");
+            checkPermission(FileChooserActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, EXTERNAL_STORAGE_REQ_CODE,"Permission needed when adding new book");
         }
     }
 
@@ -135,16 +135,13 @@ public class FileChooserActivity extends AppCompatActivity {
     protected void checkPermission (Activity thisActivity, String permission, int requestCode, String errorText) {
 
         if(ContextCompat.checkSelfPermission(thisActivity,permission) != PackageManager.PERMISSION_GRANTED) {
-
             if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
                     permission)) {
                 Toast.makeText(this,errorText,Toast.LENGTH_SHORT).show();
-
                 ActivityCompat.requestPermissions(thisActivity,
                         new String[]{permission},
                         requestCode);
             } else {
-
                 ActivityCompat.requestPermissions(thisActivity,
                         new String[]{permission},
                         requestCode);

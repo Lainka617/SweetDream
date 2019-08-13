@@ -47,7 +47,7 @@ public abstract class AnimationProvider {
     protected int mScreenWidth;
     protected int mScreenHeight;
 
-    protected PointF mTouch = new PointF(); // 拖拽点
+    protected PointF mTouch = new PointF(); //
     private Direction direction = Direction.none;
     private boolean isCancel = false;
 
@@ -58,25 +58,25 @@ public abstract class AnimationProvider {
         this.mScreenHeight = height;
     }
 
-    //绘制滑动页面
+
     public abstract void drawMove(Canvas canvas);
 
-    //绘制不滑动页面
+
     public abstract void drawStatic(Canvas canvas);
 
-    //设置开始拖拽点
+
     public void setStartPoint(float x,float y){
         myStartX = x;
         myStartY = y;
     }
 
-    //设置拖拽点
+
     public void setTouchPoint(float x,float y){
         mTouch.x = x;
         mTouch.y = y;
     }
 
-    //设置方向
+
     public void setDirection(Direction direction){
         this.direction = direction;
     }

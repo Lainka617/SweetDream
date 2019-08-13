@@ -32,9 +32,7 @@ import com.example.sweetdream.util.CommonUtil;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Lxq on 2016/4/12.
- */
+
 public class DragGridView extends GridView implements View.OnClickListener{
 
     /**
@@ -161,16 +159,16 @@ public class DragGridView extends GridView implements View.OnClickListener{
 
     private Handler mHandler = new Handler();
 
-    //用来处理是否为长按的Runnable
+    //
     private Runnable mLongClickRunnable = new Runnable() {
 
         @Override
         public void run() {
-            isDrag = true; //设置可以拖拽
-            mVibrator.vibrate(50); //震动一下
-            mStartDragItemView.setVisibility(View.INVISIBLE);//隐藏该item
+            isDrag = true; //
+            mVibrator.vibrate(50); //
+            mStartDragItemView.setVisibility(View.INVISIBLE);//
 
-            //根据我们按下的点显示item镜像
+            //
             createDragImage(mDragBitmap, mDownX, mDownY);
 
             setIsShowDeleteButton(true);
@@ -222,7 +220,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
 
 
     /**
-     * 若设置为AUTO_FIT，计算有多少列
+     *
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -257,7 +255,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
     }
 
     /**
-     * 设置响应拖拽的毫秒数，默认是1000毫秒
+     *
      * @param dragResponseMS
      */
     public void setDragResponseMS(long dragResponseMS) {
@@ -271,7 +269,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
                 mDownX = (int) ev.getX();
                 mDownY = (int) ev.getY();
 
-                //根据按下的X,Y坐标获取所点击item的position
+
                 mDragPosition = pointToPosition(mDownX, mDownY);
                 // Log.d("mDagPosition is", "" + mDragPosition);
 
@@ -279,13 +277,12 @@ public class DragGridView extends GridView implements View.OnClickListener{
                     return super.dispatchTouchEvent(ev);
                 }
 
-                //使用Handler延迟dragResponseMS执行mLongClickRunnable,
-                // 大于20dp才执行mLongClickRunnable避免与Drawlayout发生冲突
+
                 int panding = (int) CommonUtil.convertDpToPixel(mcontext,20);
                 if(mDownX > panding) {
                     mHandler.postDelayed(mLongClickRunnable, dragResponseMS);
                 }
-                //根据position获取该item所对应的View
+
                 mStartDragItemView = getChildAt(mDragPosition - getFirstVisiblePosition());
 
                 //
@@ -295,19 +292,19 @@ public class DragGridView extends GridView implements View.OnClickListener{
                 mOffset2Top = (int) (ev.getRawY() - mDownY);
                 mOffset2Left = (int) (ev.getRawX() - mDownX);
 
-                //获取DragGridView自动向上滚动的偏移量，小于这个值，DragGridView向下滚动
+
                 mDownScrollBorder = getHeight() / 5;
-                //获取DragGridView自动向下滚动的偏移量，大于这个值，DragGridView向上滚动
+
                 mUpScrollBorder = getHeight() * 4/5;
 
 
 
-                //开启mDragItemView绘图缓存
+
                 mStartDragItemView.setDrawingCacheEnabled(true);
 
-                //获取mDragItemView在缓存中的Bitmap对象
+
                 mDragBitmap = Bitmap.createBitmap(mStartDragItemView.getDrawingCache());
-                //这一步很关键，释放绘图缓存，避免出现重复的镜像
+
                 mStartDragItemView.destroyDrawingCache();
 
 
@@ -316,7 +313,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
                 int moveX = (int)ev.getX();
                 int moveY = (int) ev.getY();
 
-                //如果我们在按下的item上面移动，只要不超过item的边界我们就不移除mRunnable
+
                 if(!isTouchInItem(mStartDragItemView, moveX, moveY)){
                     mHandler.removeCallbacks(mLongClickRunnable);
                 }
@@ -331,7 +328,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
 
 
     /**
-     * 是否点击在GridView的item上面
+     *
      * @param dragView
      * @param x
      * @param y
@@ -366,7 +363,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
                     moveX = (int) ev.getX();
                     moveY = (int) ev.getY();
 
-                    //拖动item
+
                     onDragItem(moveX, moveY);
                     break;
                 case MotionEvent.ACTION_UP:
@@ -380,12 +377,12 @@ public class DragGridView extends GridView implements View.OnClickListener{
     }
 
     /**
-     * 创建拖动的镜像
+     *
      * @param bitmap
      * @param downX
-     * 			按下的点相对父控件的X坐标
+     *
      * @param downY
-     * 			按下的点相对父控件的X坐标
+     *
      */
     private void createDragImage(Bitmap bitmap, int downX , int downY){
         mWindowLayoutParams = new WindowManager.LayoutParams();
@@ -407,7 +404,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
     }
 
     /**
-     * 从界面上面移动拖动镜像
+     *
      */
     private void removeDragImage(){
         if(mDragImageView != null){
@@ -417,25 +414,25 @@ public class DragGridView extends GridView implements View.OnClickListener{
     }
 
     /**
-     * 拖动item，在里面实现了item镜像的位置更新，item的相互交换以及GridView的自行滚动
+     *
      * @param moveX
      * @param moveY
      */
     private void onDragItem(int moveX, int moveY){
         mWindowLayoutParams.x = moveX - mPoint2ItemLeft + mOffset2Left;
         mWindowLayoutParams.y = moveY - mPoint2ItemTop + mOffset2Top - mStatusHeight;
-        mWindowManager.updateViewLayout(mDragImageView, mWindowLayoutParams); //更新镜像的位置
+        mWindowManager.updateViewLayout(mDragImageView, mWindowLayoutParams);
         onSwapItem(moveX, moveY);
 
-        //GridView自动滚动             //已知bug：当上下滚动过快时item的相互交换速度跟不上会crash
+
         mHandler.post(mScrollRunnable);
     }
 
 
     /**
-     * 当moveY的值大于向上滚动的边界值，触发GridView自动向上滚动
-     * 当moveY的值小于向下滚动的边界值，触发GridView自动向下滚动
-     * 否则不进行滚动
+     *
+     *
+     *
      */
     private Runnable mScrollRunnable = new Runnable() {
 
@@ -463,15 +460,15 @@ public class DragGridView extends GridView implements View.OnClickListener{
 
 
     /**
-     * 交换item,并且控制item之间的显示与隐藏效果
+     *
      * @param moveX
      * @param moveY
      */
     private void onSwapItem(int moveX, int moveY){
-        //获取我们手指移动到的那个item的position
+
         final int tempPosition = pointToPosition(moveX, moveY);
 
-        //假如tempPosition 改变了并且tempPosition不等于-1,则进行交换
+
         if(tempPosition != mDragPosition && tempPosition != AdapterView.INVALID_POSITION && mAnimationEnd ){
 
             mDragAdapter.setHideItem(tempPosition);
@@ -486,7 +483,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
                 public boolean onPreDraw() {
                     observer.removeOnPreDrawListener(this);
                     animateReorder(mDragPosition, tempPosition);
-                    mDragPosition = tempPosition;  //交换结束更新mDragPosition
+                    mDragPosition = tempPosition;
                     return true;
                 }
             } );
@@ -496,7 +493,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
     }
 
     /**
-     * 创建移动动画
+     *
      * @param view
      * @param startX
      * @param endX
@@ -517,7 +514,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
 
 
     /**
-     * item的交换动画效果
+     *
      * @param oldPosition
      * @param newPosition
      */
@@ -529,7 +526,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
                 View view = getChildAt(pos - getFirstVisiblePosition());
                 // Log.d("oldPosition",""+ pos);
 
-                //双数
+
                 if ((pos + 1) % mNumColumns == 0) {
                     resultList.add(createTranslationAnimations(view,
                             - view.getWidth() * (mNumColumns - 1), 0,
@@ -574,7 +571,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
     }
 
     /**
-     * 停止拖拽我们将之前隐藏的item显示出来，并将镜像移除
+     *
      */
     private void onStopDrag(){
         View view = getChildAt(mDragPosition - getFirstVisiblePosition());
@@ -586,7 +583,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
     }
 
     /**
-     * 获得状态栏的高度
+     *
      *
      * @param context
      * @return
@@ -629,7 +626,7 @@ public class DragGridView extends GridView implements View.OnClickListener{
                 canvas.drawBitmap(background, x, y, null);
             }
             if(y > top) {
-                canvas.drawBitmap(bookshelf_dock, 0 , y-dockHightPanding, null);
+                //canvas.drawBitmap(bookshelf_dock, 0 , y-dockHightPanding, null);
             }
         }
         if(i == 1) {

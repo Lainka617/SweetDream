@@ -33,54 +33,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/ll_status"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="?attr/colorPrimary"-->
-            <!--android:fitsSystemWindows="true"-->
-            <!--android:orientation="vertical"-->
-            <!--android:visibility="invisible">-->
-        <!--</LinearLayout>-->
-
-        <!--<LinearLayout-->
-            <!--android:id="@+id/ll_top"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="?attr/colorPrimary"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_below="@id/ll_status"-->
-            <!--android:visibility="gone">-->
-
-            <!--<ImageButton-->
-                <!--android:id="@+id/btn_return"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@mipmap/return_button"-->
-                <!--android:layout_marginLeft="10dp"-->
-                <!--android:layout_gravity="center_vertical" />-->
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="right"-->
-                <!--android:orientation="horizontal">-->
-                <!--<ImageButton-->
-                    <!--android:id="@+id/btn_light"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:background="@color/black" />-->
-
-                <!--<ImageButton-->
-                    <!--android:id="@+id/btn_listener_book"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:layout_marginRight="10dp"-->
-                    <!--android:background="@mipmap/img_tts" />-->
-            <!--</LinearLayout>-->
-        <!--</LinearLayout>-->
 
     <RelativeLayout
         android:id="@+id/rl_read_bottom"
