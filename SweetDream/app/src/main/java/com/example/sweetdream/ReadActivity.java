@@ -1,5 +1,6 @@
 package com.example.sweetdream;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Service;
@@ -8,22 +9,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.SQLException;
 import android.graphics.Point;
-import android.graphics.Typeface;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +34,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,9 +50,11 @@ import com.example.sweetdream.db.BookMarks;
 //import com.example.sweetdream.util.BrightnessUtil;
 import com.example.sweetdream.util.PageFactory;
 import com.example.sweetdream.view.PageWidget;
+import com.water.amraudiorecorder.AMRAudioRecorder;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -62,7 +64,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2016/7/15 0015.
@@ -99,9 +100,14 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
     ImageButton recordFinish;
     ImageButton displayRecord;
     int recordStatus = 0; //0: notstarted, 1:recording, 2:paused
-    int displayStatus = 0;
+    int displayStatus = 0;//0: notdisplay, 1:displaying
+    boolean recordExist = false;
+    String recordPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/sweetdreamrecords/";
+    String bookPath = "";
 
     MediaPlayer recordPlayer;
+    AMRAudioRecorder recorder;
+    SharedPreferences bookRecordMap;
 
     //end new code for record
 
@@ -301,16 +307,37 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
         this.recordControl = (ImageButton)findViewById(R.id.record_btn);
         this.recordFinish = (ImageButton)findViewById(R.id.stop_record_btn);
         this.displayRecord = (ImageButton)findViewById(R.id.display_record);
+        this.recordControl.setImageResource(R.drawable.record_record);
+        this.recordFinish.setVisibility(View.INVISIBLE);
 
-        this.recordPlayer = MediaPlayer.create(this, R.raw.testamrfile);
-//        try {
-//            this.recordPlayer.setDataSource("res/raw/in_the_end_linkin_park");
-//        }catch (Exception e){
-//            Log.d("recordPlayer", e.toString());
-//        }
-        this.recordPlayer.setVolume(0.5f, 0.5f);
-        this.recordPlayer.setLooping(false);
+        this.recordPlayer = new MediaPlayer();
 
+        File dir = new File(this.recordPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        this.recorder = new AMRAudioRecorder(this.recordPath);
+
+        this.bookRecordMap = getSharedPreferences("book_record_map", Context.MODE_PRIVATE);
+
+        String recordPath = this.bookRecordMap.getString(bookList.getBookpath(), "");
+
+        try {
+            if(recordPath.isEmpty()){
+                this.recordExist = false;
+                this.displayRecord.setVisibility(View.INVISIBLE);
+            }
+            else{
+                this.recordExist = true;
+                this.recordPlayer.setDataSource(recordPath);
+                this.recordPlayer.setVolume(0.5f, 0.5f);
+                this.recordPlayer.setLooping(false);
+                this.recordPlayer.prepare();
+            }
+        }catch (Exception e){
+            Log.d("recordPlayer", e.toString());
+        }
         /**
          * new code for timer
          */
@@ -325,14 +352,25 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
         vibrator=(Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
         // end
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!(getApplicationContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    && getApplicationContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+            ) {
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+            }
+        }
+
         this.displayRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //display
                 if(displayStatus == 0){
-                    recordPlayer.start();
-                    displayRecord.setImageResource(R.drawable.display_pause);
-                    displayStatus = 1;
+                    if(recordExist) {
+                        recordPlayer.start();
+                        displayRecord.setImageResource(R.drawable.display_pause);
+                        displayStatus = 1;
+                    }
                 }
                 else{
                     recordPlayer.pause();
@@ -345,15 +383,40 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
         this.recordFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                recordStatus = 0;
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(ReadActivity.this);
                 builder.setMessage("Do you want to save your reading record? ");
-                builder.setCancelable(true);
                 builder.setPositiveButton("save",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //save file
-                                recordStatus = 0;
+                                recordFinish.setVisibility(View.INVISIBLE);
+                                recordControl.setImageResource(R.drawable.record_record);
+                                recorder.stop();
+                                String recordFilePath = recorder.getAudioFilePath();
+                                final SharedPreferences.Editor editor = bookRecordMap.edit();
+                                editor.putString(bookList.getBookpath(), recordFilePath);
+                                editor.apply();
+                                try {
+                                    recordPlayer = new MediaPlayer();
+                                    recordPlayer.setDataSource(recordFilePath);
+                                    recordPlayer.setVolume(0.5f, 0.5f);
+                                    recordPlayer.setLooping(false);
+                                    recordPlayer.prepare();
+                                }catch (Exception e){
+                                    Log.d("finish record", e.toString());
+                                }
+                            }
+                        });
+                builder.setNegativeButton("cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                recordFinish.setVisibility(View.INVISIBLE);
+                                recordControl.setImageResource(R.drawable.record_record);
+                                recorder.clear();
                             }
                         });
                 final Dialog dialog = builder.create();
@@ -366,13 +429,20 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
             public void onClick(View view) {
 
                 if(recordStatus == 0){
-
+                    recorder.start();
+                    recordControl.setImageResource(R.drawable.record_pause);
+                    recordStatus = 1;
+                    recordFinish.setVisibility(View.VISIBLE);
                 }
                 else if(recordStatus == 1){
-
+                    recorder.pause();
+                    recordControl.setImageResource(R.drawable.record_continue);
+                    recordStatus = 2;
                 }
                 else{
-
+                    recorder.resume();
+                    recordControl.setImageResource(R.drawable.record_pause);
+                    recordStatus = 1;
                 }
             }
         });
@@ -503,7 +573,10 @@ public class ReadActivity extends BaseActivity implements SpeechSynthesizerListe
         if (bookList == null){
             throw new NullPointerException("BookList can not be null");
         }
-
+        Log.d("book list name", bookList.getBookname());
+        Log.d("book list path", bookList.getBookpath());
+        Log.d("book list id", bookList.getId()+"");
+        Log.d("book list begin", bookList.getBegin()+"");
         Intent intent = new Intent(context, ReadActivity.class);
         intent.putExtra(EXTRA_BOOK, bookList);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

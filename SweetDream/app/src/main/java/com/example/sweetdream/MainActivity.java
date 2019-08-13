@@ -4,11 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.graphics.Typeface;
-import android.support.design.widget.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,6 @@ import com.example.sweetdream.adapter.ShelfAdapter;
 import com.example.sweetdream.base.BaseActivity;
 import com.example.sweetdream.db.BookList;
 import com.example.sweetdream.filechooser.FileChooserActivity;
-import com.example.sweetdream.util.DisplayUtils;
 import com.example.sweetdream.view.DragGridView;
 
 import org.litepal.crud.DataSupport;
