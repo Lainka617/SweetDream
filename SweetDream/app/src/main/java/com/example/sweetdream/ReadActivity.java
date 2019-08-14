@@ -82,10 +82,6 @@ public class ReadActivity extends BaseActivity {
     LinearLayout bookpop_bottom;
     @Bind(R.id.rl_bottom)
     RelativeLayout rl_bottom;
-    @Bind(R.id.tv_stop_read)
-    TextView tv_stop_read;
-    @Bind(R.id.rl_read_bottom)
-    RelativeLayout rl_read_bottom;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.appbar)
@@ -444,6 +440,7 @@ public class ReadActivity extends BaseActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        timerTask.cancel();
         alartTime = 61;
         timerTask = new TimerTask() {
             @Override
@@ -466,6 +463,7 @@ public class ReadActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        timerTask.cancel();
         pageFactory.clear();
         bookpage = null;
         unregisterReceiver(myReceiver);
@@ -523,9 +521,9 @@ public class ReadActivity extends BaseActivity {
         rl_progress.setVisibility(View.GONE);
 
         if (isSpeaking){
-            Animation topAnim = AnimationUtils.loadAnimation(this, R.anim.dialog_top_enter);
-            rl_read_bottom.startAnimation(topAnim);
-            rl_read_bottom.setVisibility(View.VISIBLE);
+//            Animation topAnim = AnimationUtils.loadAnimation(this, R.anim.dialog_top_enter);
+//            rl_read_bottom.startAnimation(topAnim);
+//            rl_read_bottom.setVisibility(View.VISIBLE);
         }else {
             showSystemUI();
 
@@ -550,12 +548,8 @@ public class ReadActivity extends BaseActivity {
         if (appbar.getVisibility() == View.VISIBLE) {
             appbar.startAnimation(topAnim);
         }
-        if (rl_read_bottom.getVisibility() == View.VISIBLE) {
-            rl_read_bottom.startAnimation(topAnim);
-        }
 
         rl_bottom.setVisibility(View.GONE);
-        rl_read_bottom.setVisibility(View.GONE);
         appbar.setVisibility(View.GONE);
         hideSystemUI();
     }

@@ -9,6 +9,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.widget.Toolbar;
 
+import android.net.Uri;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.AbsoluteLayout;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sweetdream.adapter.ShelfAdapter;
 
@@ -29,6 +31,8 @@ import com.example.sweetdream.view.DragGridView;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import butterknife.Bind;
@@ -80,6 +84,10 @@ public class MainActivity extends BaseActivity {
         bookLists = DataSupport.findAll(BookList.class);
         adapter = new ShelfAdapter(MainActivity.this,bookLists);
         bookShelf.setAdapter(adapter);
+
+        copyfile("/sdcard/SweetDream","little_gold_fish.txt",R.raw.little_gold_fish);
+        copyfile("/sdcard/SweetDream","three_little_pigs.txt",R.raw.three_little_pigs);
+        copyfile("/sdcard/SweetDream","fox_and_crow.txt",R.raw.fox_and_crow);
     }
 
     @Override
@@ -139,11 +147,46 @@ public class MainActivity extends BaseActivity {
 
         int id = item.getItemId();
         if (id == R.id.action_select_file){
-            Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
-            startActivity(intent);
+            Uri uri = Uri.parse("http://textfiles.com/stories/");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+
+                startActivity(intent);
+            } else {
+
+                Toast.makeText(MainActivity.this, "error happens", Toast.LENGTH_SHORT).show();
+
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void copyfile(String fileDirPath,String fileName,int id) {
+        String filePath = fileDirPath + "/" + fileName;
+        try {
+            File dir = new File(fileDirPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            File file = new File(filePath);
+            if (!file.exists()) {
+                InputStream is = getResources().openRawResource(
+                        id);
+                FileOutputStream fs = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int count = 0;
+                while ((count = is.read(buffer)) > 0) {
+                    fs.write(buffer, 0, count);
+                }
+                fs.close();
+                is.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
